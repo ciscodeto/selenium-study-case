@@ -16,8 +16,13 @@ public class SeleniumTest {
 
     @BeforeEach
     void setUp(){
-        WebDriverManager.chromedriver().setup();
-        driver = new ChromeDriver();
+        System.setProperty("webdriver.chrome.driver",
+                Paths.get("src", "test", "resources", "drivers", "chromedriver.exe").toString());
+
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--remote-allow-origins=*");
+
+        driver = new ChromeDriver(options);
     }
     @AfterEach
     void tearDown(){
@@ -27,17 +32,6 @@ public class SeleniumTest {
     @Test
     @DisplayName("Should open and close Chrome browser")
     void shouldOpenAndCloseChromeBrowser() throws InterruptedException {
-        // Configura o caminho para o ChromeDriver
-        System.setProperty("webdriver.chrome.driver",
-                Paths.get("src", "test", "resources", "drivers", "chromedriver.exe").toString());
-
-        // Configurações adicionais do Chrome
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--remote-allow-origins=*");
-
-        // Inicializa o WebDriver
-        WebDriver driver = new ChromeDriver(options);
-
         try {
             // Acessa a página do Google
             System.out.println("Abrindo o navegador...");
