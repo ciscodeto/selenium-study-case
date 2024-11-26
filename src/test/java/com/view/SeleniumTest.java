@@ -1,7 +1,10 @@
 package com.view;
 
+import io.github.bonigarcia.wdm.WebDriverManager;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -9,6 +12,18 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import java.nio.file.Paths;
 
 public class SeleniumTest {
+    private WebDriver driver;
+
+    @BeforeEach
+    void setUp(){
+        WebDriverManager.chromedriver().setup();
+        driver = new ChromeDriver();
+    }
+    @AfterEach
+    void tearDown(){
+        driver.quit();
+    }
+
     @Test
     @DisplayName("Should open and close Chrome browser")
     void shouldOpenAndCloseChromeBrowser() throws InterruptedException {
