@@ -8,6 +8,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.nio.file.Paths;
+import java.time.Duration;
+
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -23,6 +25,7 @@ public class SeleniumTest {
         options.addArguments("--remote-allow-origins=*");
 
         driver = new ChromeDriver(options);
+        driver.manage().timeouts().implicitlyWait(Duration.ofMillis(1000));
     }
     @AfterEach
     void tearDown(){
@@ -50,8 +53,6 @@ public class SeleniumTest {
             usernameField.sendKeys("novo.medico123");
             passwordField.sendKeys("SenhaMedico123!");
             addButton.click();
-
-            Thread.sleep(1000);
         }
     }
 
@@ -68,7 +69,6 @@ public class SeleniumTest {
         @Test
         @DisplayName("Realizar Login Correto com Usuário e Senha")
         void shouldLoginWithValidCredentials() throws InterruptedException {
-            driver.get(loginUrl);
             Thread.sleep(2000);
 
             WebElement usernameField = driver.findElement(By.xpath("//input[@placeholder='User']"));
