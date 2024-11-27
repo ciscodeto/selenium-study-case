@@ -306,5 +306,24 @@ public class SeleniumTest {
             assertNotEquals("https://sitetc1kaykywaleskabreno.vercel.app/medico",
                     currentUrl, "A URL atual não é a esperada!");
         }
+        @Test
+        @DisplayName("Realizar Login de Paciente com Senha Certa e Sem Usuario")
+        void PatientLoginWithCorrectPasswordAndNoUser() {
+            driver.get(loginUrl);
+
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+            WebElement passwordField = driver.findElement(By.xpath("//input[@placeholder='Password']"));
+            WebElement loginButton = driver.findElement(By.xpath("//button[text()='Login']"));
+
+            passwordField.sendKeys("BobPass654!");
+            loginButton.click();
+
+            wait.until(ExpectedConditions.not(ExpectedConditions.urlToBe("https://sitetc1kaykywaleskabreno.vercel.app/paciente")));
+
+            String currentUrl = driver.getCurrentUrl();
+            assertNotEquals("https://sitetc1kaykywaleskabreno.vercel.app/paciente",
+                    currentUrl, "A URL atual não é a esperada!");
+        }
     }
 }
