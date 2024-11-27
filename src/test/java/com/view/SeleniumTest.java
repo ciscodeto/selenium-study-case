@@ -45,8 +45,8 @@ public class SeleniumTest {
         }
 
         @Test
-        @DisplayName("Adicionar Novo Médico")
-        void shouldAddDoctor() throws InterruptedException {
+        @DisplayName("Should Add New Doctor")
+        void shouldAddDoctor() {
 
             WebElement usernameField = driver.findElement(By.xpath("//input[@placeholder='Usuário']"));
             WebElement passwordField = driver.findElement(By.xpath("//input[@placeholder='Senha']"));
