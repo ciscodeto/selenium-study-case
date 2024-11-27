@@ -11,9 +11,7 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.List;
 
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SeleniumTest {
     private WebDriver driver;
@@ -167,6 +165,26 @@ public class SeleniumTest {
 
             String currentUrl = driver.getCurrentUrl();
             assertEquals("https://sitetc1kaykywaleskabreno.vercel.app/paciente",
+                    currentUrl, "A URL atual não é a esperada!");
+        }
+        @Test
+        @DisplayName("Login para Pagina de Paciente Usando um Medico com Usuário e Senha")
+        void shouldloginwithinvalidpacientredentials() throws InterruptedException {
+            driver.get(loginUrl);
+            Thread.sleep(2000);
+
+            WebElement usernameField = driver.findElement(By.xpath("//input[@placeholder='User']"));
+            WebElement passwordField = driver.findElement(By.xpath("//input[@placeholder='Password']"));
+            WebElement loginButton = driver.findElement(By.xpath("//button[text()='Login']"));
+
+            usernameField.sendKeys("novo.medico123");
+            passwordField.sendKeys("SenhaMedico123!");
+            loginButton.click();
+
+            Thread.sleep(2000);
+
+            String currentUrl = driver.getCurrentUrl();
+            assertNotEquals("https://sitetc1kaykywaleskabreno.vercel.app/paciente",
                     currentUrl, "A URL atual não é a esperada!");
         }
     }
