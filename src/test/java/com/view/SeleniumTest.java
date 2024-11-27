@@ -91,10 +91,12 @@ public class SeleniumTest {
         }
         @Test
         @DisplayName("Realizar Login Correto com Usuário e Senha")
-        void shouldLoginWithValidCredentials() throws InterruptedException {
-            Thread.sleep(2000);
+        void shouldLoginWithValidCredentials() {
+            driver.get(loginUrl);
 
-            WebElement usernameField = driver.findElement(By.xpath("//input[@placeholder='User']"));
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+            WebElement usernameField = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@placeholder='User']")));
             WebElement passwordField = driver.findElement(By.xpath("//input[@placeholder='Password']"));
             WebElement loginButton = driver.findElement(By.xpath("//button[text()='Login']"));
 
@@ -102,19 +104,21 @@ public class SeleniumTest {
             passwordField.sendKeys("DianaPass123!");
             loginButton.click();
 
-            Thread.sleep(2000);
+            wait.until(ExpectedConditions.urlToBe("https://sitetc1kaykywaleskabreno.vercel.app/medico"));
 
             String currentUrl = driver.getCurrentUrl();
             assertEquals("https://sitetc1kaykywaleskabreno.vercel.app/medico",
                     currentUrl, "A URL atual não é a esperada!");
         }
-        @Test
-        @DisplayName("Realizar Login incorreto de Medico Usando um Paciente com Usuário e Senha")
-        void shouldloginwithinvaliddoctorcredentials() throws InterruptedException {
-            driver.get(loginUrl);
-            Thread.sleep(2000);
 
-            WebElement usernameField = driver.findElement(By.xpath("//input[@placeholder='User']"));
+        @Test
+        @DisplayName("Login para Página de Médico Usando um Paciente com Usuário e Senha")
+        void shouldLoginWithInvaliDoctorCredentials() {
+            driver.get(loginUrl);
+
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+            WebElement usernameField = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@placeholder='User']")));
             WebElement passwordField = driver.findElement(By.xpath("//input[@placeholder='Password']"));
             WebElement loginButton = driver.findElement(By.xpath("//button[text()='Login']"));
 
@@ -122,38 +126,49 @@ public class SeleniumTest {
             passwordField.sendKeys("BobPass654!");
             loginButton.click();
 
-            Thread.sleep(2000);
+            wait.until(ExpectedConditions.not(ExpectedConditions.urlToBe("https://sitetc1kaykywaleskabreno.vercel.app/paciente")));
 
             String currentUrl = driver.getCurrentUrl();
-            assertEquals("https://sitetc1kaykywaleskabreno.vercel.app/medico",
+            assertNotEquals("https://sitetc1kaykywaleskabreno.vercel.app/medico",
                     currentUrl, "A URL atual não é a esperada!");
         }
+
+
+
         @Test
-        @DisplayName("Realizar Login de Medico Usando um Usuário e Senha qualquer")
-        void shouldloginwithrandomcredentials() throws InterruptedException {
+        @DisplayName("Realizar Login de Médico Usando um Usuário e Senha Qualquer")
+        void shouldLoginWithRandomCredentials() {
             driver.get(loginUrl);
-            Thread.sleep(2000);
 
-            WebElement usernameField = driver.findElement(By.xpath("//input[@placeholder='User']"));
-            WebElement passwordField = driver.findElement(By.xpath("//input[@placeholder='Password']"));
-            WebElement loginButton = driver.findElement(By.xpath("//button[text()='Login']"));
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-            usernameField.sendKeys("usuario123");
-            passwordField.sendKeys("123456");
-            loginButton.click();
+            try {
+                WebElement usernameField = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@placeholder='User']")));
+                WebElement passwordField = driver.findElement(By.xpath("//input[@placeholder='Password']"));
+                WebElement loginButton = driver.findElement(By.xpath("//button[text()='Login']"));
 
-            Thread.sleep(3000);
+                usernameField.sendKeys("usuario123");
+                passwordField.sendKeys("123456");
+                loginButton.click();
 
-            String currentUrl = driver.getCurrentUrl();
-            assertEquals("https://sitetc1kaykywaleskabreno.vercel.app/medico",
-                    currentUrl, "A URL atual não é a esperada!");
+                wait.until(ExpectedConditions.not(ExpectedConditions.urlToBe("https://sitetc1kaykywaleskabreno.vercel.app/medico")));
+
+                String currentUrl = driver.getCurrentUrl();
+                assertNotEquals("https://sitetc1kaykywaleskabreno.vercel.app/medico",
+                        currentUrl, "A URL atual não é a esperada!");
+            } catch (Exception e) {
+                Assertions.fail("Erro no Teste 3: " + e.getMessage());
+            }
         }
+
         @Test
         @DisplayName("Realizar Login Correto com Usuário e Senha de Paciente")
-        void shouldLoginWithValidCredentialsPacient() throws InterruptedException {
-            Thread.sleep(2000);
+        void shouldLoginWithValidCredentialsPacient() {
+            driver.get(loginUrl);
 
-            WebElement usernameField = driver.findElement(By.xpath("//input[@placeholder='User']"));
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+            WebElement usernameField = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@placeholder='User']")));
             WebElement passwordField = driver.findElement(By.xpath("//input[@placeholder='Password']"));
             WebElement loginButton = driver.findElement(By.xpath("//button[text()='Login']"));
 
@@ -161,19 +176,20 @@ public class SeleniumTest {
             passwordField.sendKeys("BobPass654!");
             loginButton.click();
 
-            Thread.sleep(2000);
+            wait.until(ExpectedConditions.urlToBe("https://sitetc1kaykywaleskabreno.vercel.app/paciente"));
 
             String currentUrl = driver.getCurrentUrl();
             assertEquals("https://sitetc1kaykywaleskabreno.vercel.app/paciente",
                     currentUrl, "A URL atual não é a esperada!");
         }
         @Test
-        @DisplayName("Login para Pagina de Paciente Usando um Medico com Usuário e Senha")
-        void shouldloginwithinvalidpacientredentials() throws InterruptedException {
+        @DisplayName("Login para Página de Paciente Usando um Médico com Usuário e Senha")
+        void shouldLoginWithInvalidPatientCredentials() {
             driver.get(loginUrl);
-            Thread.sleep(2000);
 
-            WebElement usernameField = driver.findElement(By.xpath("//input[@placeholder='User']"));
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+            WebElement usernameField = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@placeholder='User']")));
             WebElement passwordField = driver.findElement(By.xpath("//input[@placeholder='Password']"));
             WebElement loginButton = driver.findElement(By.xpath("//button[text()='Login']"));
 
@@ -181,7 +197,7 @@ public class SeleniumTest {
             passwordField.sendKeys("SenhaMedico123!");
             loginButton.click();
 
-            Thread.sleep(2000);
+            wait.until(ExpectedConditions.not(ExpectedConditions.urlToBe("https://sitetc1kaykywaleskabreno.vercel.app/paciente")));
 
             String currentUrl = driver.getCurrentUrl();
             assertNotEquals("https://sitetc1kaykywaleskabreno.vercel.app/paciente",
