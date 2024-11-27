@@ -1,17 +1,19 @@
 package com.view;
 
 import org.junit.jupiter.api.*;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.List;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SeleniumTest {
     private WebDriver driver;
@@ -46,13 +48,37 @@ public class SeleniumTest {
         @DisplayName("Adicionar Novo Médico")
         void shouldAddDoctor() throws InterruptedException {
 
-            WebElement usernameField = driver.findElements(By.xpath("//input[@placeholder='Usuário']")).get(1);
-            WebElement passwordField = driver.findElements(By.xpath("//input[@placeholder='Senha']")).get(1);
-            WebElement addButton = driver.findElement(By.xpath("//button[text()='Adicionar Paciente']"));
+            WebElement usernameField = driver.findElement(By.xpath("//input[@placeholder='Usuário']"));
+            WebElement passwordField = driver.findElement(By.xpath("//input[@placeholder='Senha']"));
+            WebElement addButton = driver.findElement(By.xpath("//button[text()='Adicionar Médico']"));
 
-            usernameField.sendKeys("novo.medico123");
-            passwordField.sendKeys("SenhaMedico123!");
+            String newDoctorUsername = "novo.medico123";
+            String newDoctorPassword = "SenhaMedico123!";
+            usernameField.sendKeys(newDoctorUsername);
+            passwordField.sendKeys(newDoctorPassword);
             addButton.click();
+
+            try {
+                WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+                Alert alert = wait.until(ExpectedConditions.alertIsPresent()); // Espera até o alerta estar presente
+                alert.accept(); // Aceitar o alerta
+            } catch (Exception e) {
+                System.out.println("Nenhum alerta foi exibido.");
+            }
+
+            // Localizar o último item da lista com espera dinâmica
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            WebElement lastDoctorElement = wait.until(
+                    ExpectedConditions.presenceOfElementLocated(By.xpath("//ul/li[last()]"))
+            );
+
+            String lastDoctorText = lastDoctorElement.getText();
+            assertTrue(
+                    lastDoctorText.contains(newDoctorUsername) && lastDoctorText.contains(newDoctorPassword),
+                    "O último item da lista não corresponde ao médico recém-adicionado!"
+            );
+
+            System.out.println("Teste bem-sucedido: Médico adicionado com sucesso.");
         }
     }
 
