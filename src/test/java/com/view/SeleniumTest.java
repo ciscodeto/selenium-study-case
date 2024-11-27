@@ -9,6 +9,8 @@ import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.nio.file.Paths;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class SeleniumTest {
     private WebDriver driver;
 
@@ -48,35 +50,24 @@ public class SeleniumTest {
             Thread.sleep(1000); // Apenas para visualização rápida
         }
     }
+
     @Test
     @DisplayName("Realizar Login Correto com Usuário e Senha")
     void shouldLoginWithValidCredentials() throws InterruptedException {
-        driver.get("https://sitetc1kaykywaleskabreno.vercel.app/");
         Thread.sleep(2000);
 
-        // Localiza os elementos do formulário
         WebElement usernameField = driver.findElement(By.xpath("//input[@placeholder='User']"));
         WebElement passwordField = driver.findElement(By.xpath("//input[@placeholder='Password']"));
         WebElement loginButton = driver.findElement(By.xpath("//button[text()='Login']"));
 
-        // Preenche os campos de login
         usernameField.sendKeys("diana.green123");
         passwordField.sendKeys("DianaPass123!");
         loginButton.click();
 
-        // Aguarda brevemente para o redirecionamento ou carregamento da nova página
         Thread.sleep(2000);
 
-        // Verifica se o usuário foi redirecionado para a página incorreta
         String currentUrl = driver.getCurrentUrl();
-        if (currentUrl.equals("https://sitetc1kaykywaleskabreno.vercel.app/medico")) {
-            // Exibe mensagem no console e falha o teste
-            System.out.println("Teste bem-sucedido");
-        } else {
-            // Mensagem de sucesso no console
-            System.out.println("Teste falhou");
-        }
+        assertEquals("https://sitetc1kaykywaleskabreno.vercel.app/medico",
+                currentUrl, "A URL atual não é a esperada!");
     }
-
-
 }
