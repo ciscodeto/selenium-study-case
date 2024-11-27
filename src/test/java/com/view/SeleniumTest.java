@@ -1,9 +1,6 @@
 package com.view;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -49,4 +46,35 @@ public class SeleniumTest {
         // Aguarde ou verifique se o novo médico foi adicionado à lista
         Thread.sleep(1000); // Apenas para visualização rápida
     }
+    @Test
+    @DisplayName("Realizar Login Correto com Usuário e Senha")
+    void shouldLoginWithValidCredentials() throws InterruptedException {
+        driver.get("https://sitetc1kaykywaleskabreno.vercel.app/");
+        Thread.sleep(2000);
+
+        // Localiza os elementos do formulário
+        WebElement usernameField = driver.findElement(By.xpath("//input[@placeholder='User']"));
+        WebElement passwordField = driver.findElement(By.xpath("//input[@placeholder='Password']"));
+        WebElement loginButton = driver.findElement(By.xpath("//button[text()='Login']"));
+
+        // Preenche os campos de login
+        usernameField.sendKeys("diana.green123");
+        passwordField.sendKeys("DianaPass123!");
+        loginButton.click();
+
+        // Aguarda brevemente para o redirecionamento ou carregamento da nova página
+        Thread.sleep(2000);
+
+        // Verifica se o usuário foi redirecionado para a página incorreta
+        String currentUrl = driver.getCurrentUrl();
+        if (currentUrl.equals("https://sitetc1kaykywaleskabreno.vercel.app/medico")) {
+            // Exibe mensagem no console e falha o teste
+            System.out.println("Teste bem-sucedido");
+        } else {
+            // Mensagem de sucesso no console
+            System.out.println("Teste falhou");
+        }
+    }
+
+
 }
