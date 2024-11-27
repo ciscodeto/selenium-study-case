@@ -91,7 +91,6 @@ public class SeleniumTest {
         void loginSetUp() {
             driver.get(loginUrl);
         }
-
         @Test
         @DisplayName("Realizar Login Correto com Usuário e Senha")
         void shouldLoginWithValidCredentials() throws InterruptedException {
@@ -106,6 +105,46 @@ public class SeleniumTest {
             loginButton.click();
 
             Thread.sleep(2000);
+
+            String currentUrl = driver.getCurrentUrl();
+            assertEquals("https://sitetc1kaykywaleskabreno.vercel.app/medico",
+                    currentUrl, "A URL atual não é a esperada!");
+        }
+        @Test
+        @DisplayName("Realizar Login incorreto de Medico Usando um Paciente com Usuário e Senha")
+        void shouldloginwithinvaliddoctorcredentials() throws InterruptedException {
+            driver.get(loginUrl);
+            Thread.sleep(2000);
+
+            WebElement usernameField = driver.findElement(By.xpath("//input[@placeholder='User']"));
+            WebElement passwordField = driver.findElement(By.xpath("//input[@placeholder='Password']"));
+            WebElement loginButton = driver.findElement(By.xpath("//button[text()='Login']"));
+
+            usernameField.sendKeys("bob.brown654");
+            passwordField.sendKeys("BobPass654!");
+            loginButton.click();
+
+            Thread.sleep(2000);
+
+            String currentUrl = driver.getCurrentUrl();
+            assertEquals("https://sitetc1kaykywaleskabreno.vercel.app/medico",
+                    currentUrl, "A URL atual não é a esperada!");
+        }
+        @Test
+        @DisplayName("Realizar Login de Medico Usando um Usuário e Senha qualquer")
+        void shouldloginwithrandomcredentials() throws InterruptedException {
+            driver.get(loginUrl);
+            Thread.sleep(2000);
+
+            WebElement usernameField = driver.findElement(By.xpath("//input[@placeholder='User']"));
+            WebElement passwordField = driver.findElement(By.xpath("//input[@placeholder='Password']"));
+            WebElement loginButton = driver.findElement(By.xpath("//button[text()='Login']"));
+
+            usernameField.sendKeys("usuario123");
+            passwordField.sendKeys("123456");
+            loginButton.click();
+
+            Thread.sleep(3000);
 
             String currentUrl = driver.getCurrentUrl();
             assertEquals("https://sitetc1kaykywaleskabreno.vercel.app/medico",
