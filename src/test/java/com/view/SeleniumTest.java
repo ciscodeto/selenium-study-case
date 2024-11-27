@@ -23,17 +23,22 @@ public class SeleniumTest {
         options.addArguments("--remote-allow-origins=*");
 
         driver = new ChromeDriver(options);
-        driver.get("https://sitetc1kaykywaleskabreno.vercel.app/admin");
     }
     @AfterEach
     void tearDown(){
-        //driver.quit();
+        driver.quit();
     }
-
 
     @Nested
     @DisplayName("Admin Page Test")
     class AdminPageTest {
+        private final String adminUrl = "https://sitetc1kaykywaleskabreno.vercel.app/admin";
+
+        @BeforeEach
+        void adminSetUp() {
+            driver.get(adminUrl);
+        }
+
         @Test
         @DisplayName("Adicionar Novo Médico")
         void shouldAddDoctor() throws InterruptedException {
@@ -46,28 +51,39 @@ public class SeleniumTest {
             passwordField.sendKeys("SenhaMedico123!");
             addButton.click();
 
-            // Aguarde ou verifique se o novo médico foi adicionado à lista
-            Thread.sleep(1000); // Apenas para visualização rápida
+            Thread.sleep(1000);
         }
     }
 
-    @Test
-    @DisplayName("Realizar Login Correto com Usuário e Senha")
-    void shouldLoginWithValidCredentials() throws InterruptedException {
-        Thread.sleep(2000);
+    @Nested
+    @DisplayName("Admin Page Test")
+    class LoginPageTest {
+        private final String loginUrl = "https://sitetc1kaykywaleskabreno.vercel.app/login";
 
-        WebElement usernameField = driver.findElement(By.xpath("//input[@placeholder='User']"));
-        WebElement passwordField = driver.findElement(By.xpath("//input[@placeholder='Password']"));
-        WebElement loginButton = driver.findElement(By.xpath("//button[text()='Login']"));
+        @BeforeEach
+        void loginSetUp() {
+            driver.get(loginUrl);
+        }
 
-        usernameField.sendKeys("diana.green123");
-        passwordField.sendKeys("DianaPass123!");
-        loginButton.click();
+        @Test
+        @DisplayName("Realizar Login Correto com Usuário e Senha")
+        void shouldLoginWithValidCredentials() throws InterruptedException {
+            driver.get(loginUrl);
+            Thread.sleep(2000);
 
-        Thread.sleep(2000);
+            WebElement usernameField = driver.findElement(By.xpath("//input[@placeholder='User']"));
+            WebElement passwordField = driver.findElement(By.xpath("//input[@placeholder='Password']"));
+            WebElement loginButton = driver.findElement(By.xpath("//button[text()='Login']"));
 
-        String currentUrl = driver.getCurrentUrl();
-        assertEquals("https://sitetc1kaykywaleskabreno.vercel.app/medico",
-                currentUrl, "A URL atual não é a esperada!");
+            usernameField.sendKeys("diana.green123");
+            passwordField.sendKeys("DianaPass123!");
+            loginButton.click();
+
+            Thread.sleep(2000);
+
+            String currentUrl = driver.getCurrentUrl();
+            assertEquals("https://sitetc1kaykywaleskabreno.vercel.app/medico",
+                    currentUrl, "A URL atual não é a esperada!");
+        }
     }
 }
