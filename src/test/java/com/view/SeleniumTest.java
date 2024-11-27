@@ -1,11 +1,12 @@
 package com.view;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
@@ -23,27 +24,29 @@ public class SeleniumTest {
         options.addArguments("--remote-allow-origins=*");
 
         driver = new ChromeDriver(options);
+        driver.get("https://sitetc1kaykywaleskabreno.vercel.app/admin");
     }
     @AfterEach
     void tearDown(){
-        driver.quit();
+        //driver.quit();
     }
 
     @Test
-    @DisplayName("Should open and close Chrome browser")
-    void shouldOpenAndCloseChromeBrowser() throws InterruptedException {
-        try {
-            // Acessa a página do Google
-            System.out.println("Abrindo o navegador...");
-            driver.get("https://www.google.com");
-            System.out.println("Título da página: " + driver.getTitle());
+    @DisplayName("Adicionar Novo Médico")
+    void shouldAddDoctor() throws InterruptedException {
+        driver.get("https://sitetc1kaykywaleskabreno.vercel.app/admin");
 
-            // Aguarda 1 segundo para visualização
-            Thread.sleep(1000);
-        } finally {
-            // Fecha o navegador
-            driver.quit();
-            System.out.println("Navegador fechado.");
-        }
+        Thread.sleep(2000);
+
+        WebElement usernameField = driver.findElement(By.xpath("//input[@placeholder='Usuário']"));
+        WebElement passwordField = driver.findElement(By.xpath("//input[@placeholder='Senha']"));
+        WebElement addButton = driver.findElement(By.xpath("//button[text()='Adicionar Médico']"));
+
+        usernameField.sendKeys("novo.medico123");
+        passwordField.sendKeys("SenhaMedico123!");
+        addButton.click();
+
+        // Aguarde ou verifique se o novo médico foi adicionado à lista
+        Thread.sleep(1000); // Apenas para visualização rápida
     }
 }
