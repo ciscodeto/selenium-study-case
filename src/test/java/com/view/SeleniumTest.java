@@ -1,9 +1,6 @@
 package com.view;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -31,22 +28,24 @@ public class SeleniumTest {
         //driver.quit();
     }
 
-    @Test
-    @DisplayName("Adicionar Novo Médico")
-    void shouldAddDoctor() throws InterruptedException {
-        driver.get("https://sitetc1kaykywaleskabreno.vercel.app/admin");
 
-        Thread.sleep(2000);
+    @Nested
+    @DisplayName("Admin Page Test")
+    class AdminPageTest {
+        @Test
+        @DisplayName("Adicionar Novo Médico")
+        void shouldAddDoctor() throws InterruptedException {
 
-        WebElement usernameField = driver.findElement(By.xpath("//input[@placeholder='Usuário']"));
-        WebElement passwordField = driver.findElement(By.xpath("//input[@placeholder='Senha']"));
-        WebElement addButton = driver.findElement(By.xpath("//button[text()='Adicionar Médico']"));
+            WebElement usernameField = driver.findElements(By.xpath("//input[@placeholder='Usuário']")).get(1);
+            WebElement passwordField = driver.findElements(By.xpath("//input[@placeholder='Senha']")).get(1);
+            WebElement addButton = driver.findElement(By.xpath("//button[text()='Adicionar Paciente']"));
 
-        usernameField.sendKeys("novo.medico123");
-        passwordField.sendKeys("SenhaMedico123!");
-        addButton.click();
+            usernameField.sendKeys("novo.medico123");
+            passwordField.sendKeys("SenhaMedico123!");
+            addButton.click();
 
-        // Aguarde ou verifique se o novo médico foi adicionado à lista
-        Thread.sleep(1000); // Apenas para visualização rápida
+            // Aguarde ou verifique se o novo médico foi adicionado à lista
+            Thread.sleep(1000); // Apenas para visualização rápida
+        }
     }
 }
