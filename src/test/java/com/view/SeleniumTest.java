@@ -205,7 +205,7 @@ public class SeleniumTest {
         }
         @Test
         @DisplayName("Realizar Login de Paciente com Usuário Errado e Senha Certa")
-        void PatientLoginWithCorrectUserAndWrongPassword() {
+        void PatientLoginWithWrongUserAndCorrectPassword() {
             driver.get(loginUrl);
 
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
@@ -216,6 +216,27 @@ public class SeleniumTest {
 
             usernameField.sendKeys("Usuario errado");
             passwordField.sendKeys("BobPass654!");
+            loginButton.click();
+
+            wait.until(ExpectedConditions.not(ExpectedConditions.urlToBe("https://sitetc1kaykywaleskabreno.vercel.app/paciente")));
+
+            String currentUrl = driver.getCurrentUrl();
+            assertNotEquals("https://sitetc1kaykywaleskabreno.vercel.app/paciente",
+                    currentUrl, "A URL atual não é a esperada!");
+        }
+        @Test
+        @DisplayName("Realizar Login de Paciente com Usuário Certo e Senha Errada")
+        void PatientLoginWithCorrectUserAndWrongPassword() {
+            driver.get(loginUrl);
+
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+            WebElement usernameField = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@placeholder='User']")));
+            WebElement passwordField = driver.findElement(By.xpath("//input[@placeholder='Password']"));
+            WebElement loginButton = driver.findElement(By.xpath("//button[text()='Login']"));
+
+            usernameField.sendKeys("bob.brown654");
+            passwordField.sendKeys("SenhaErrada");
             loginButton.click();
 
             wait.until(ExpectedConditions.not(ExpectedConditions.urlToBe("https://sitetc1kaykywaleskabreno.vercel.app/paciente")));
