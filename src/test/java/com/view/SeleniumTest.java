@@ -85,5 +85,25 @@ public class SeleniumTest {
             assertEquals("https://sitetc1kaykywaleskabreno.vercel.app/medico",
                     currentUrl, "A URL atual não é a esperada!");
         }
+        @Test
+        @DisplayName("Realizar Login incorreto de Medico Usando um Paciente com Usuário e Senha")
+        void shouldloginwithinvaliddoctorcredentials() throws InterruptedException {
+            driver.get(loginUrl);
+            Thread.sleep(2000);
+
+            WebElement usernameField = driver.findElement(By.xpath("//input[@placeholder='User']"));
+            WebElement passwordField = driver.findElement(By.xpath("//input[@placeholder='Password']"));
+            WebElement loginButton = driver.findElement(By.xpath("//button[text()='Login']"));
+
+            usernameField.sendKeys("bob.brown654");
+            passwordField.sendKeys("BobPass654!");
+            loginButton.click();
+
+            Thread.sleep(2000);
+
+            String currentUrl = driver.getCurrentUrl();
+            assertEquals("https://sitetc1kaykywaleskabreno.vercel.app/medico",
+                    currentUrl, "A URL atual não é a esperada!");
+        }
     }
 }
