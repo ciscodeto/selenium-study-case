@@ -81,7 +81,7 @@ public class SeleniumTest {
     }
 
     @Nested
-    @DisplayName("Admin Page Test")
+    @DisplayName("login Page Test")
     class LoginPageTest {
         private final String loginUrl = "https://sitetc1kaykywaleskabreno.vercel.app/login";
 
