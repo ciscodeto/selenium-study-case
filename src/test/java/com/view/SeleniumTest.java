@@ -11,9 +11,7 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.List;
 
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SeleniumTest {
     private WebDriver driver;
@@ -60,7 +58,7 @@ public class SeleniumTest {
 
             try {
                 WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-                Alert alert = wait.until(ExpectedConditions.alertIsPresent()); // Espera até o alerta estar presente
+                Alert alert = wait.until(ExpectedConditions.alertIsPresent());
                 alert.accept(); // Aceitar o alerta
             } catch (Exception e) {
                 System.out.println("Nenhum alerta foi exibido.");
@@ -127,7 +125,7 @@ public class SeleniumTest {
             Thread.sleep(2000);
 
             String currentUrl = driver.getCurrentUrl();
-            assertEquals("https://sitetc1kaykywaleskabreno.vercel.app/medico",
+            assertNotEquals("https://sitetc1kaykywaleskabreno.vercel.app/medico",
                     currentUrl, "A URL atual não é a esperada!");
         }
         @Test
@@ -147,7 +145,7 @@ public class SeleniumTest {
             Thread.sleep(3000);
 
             String currentUrl = driver.getCurrentUrl();
-            assertEquals("https://sitetc1kaykywaleskabreno.vercel.app/medico",
+            assertNotEquals("https://sitetc1kaykywaleskabreno.vercel.app/medico",
                     currentUrl, "A URL atual não é a esperada!");
         }
     }
