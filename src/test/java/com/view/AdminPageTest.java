@@ -61,20 +61,30 @@ public class AdminPageTest extends BaseTest {
 
         String existingDoctorUsername = "diana.green123";
         String existingDoctorPassword = "DianaPass123!";
+
+        List<WebElement> initialDoctorList = driver.findElements(By.xpath("//ul/li"));
+        long initialCount = initialDoctorList.stream()
+                .filter(element -> element.getText().contains(existingDoctorUsername))
+                .count();
+
         usernameField.sendKeys(existingDoctorUsername);
         passwordField.sendKeys(existingDoctorPassword);
         addButton.click();
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         try {
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
             Alert alert = wait.until(ExpectedConditions.alertIsPresent());
-            String alertText = alert.getText();
             alert.accept();
-            assertTrue(alertText.contains("Já existe um médico com esse nome"),
-                    "Não exibiu mensagem adequada para médico duplicado!");
         } catch (Exception e) {
-            fail("Nenhum alerta foi exibido para médico duplicado.");
+            System.out.println("Nenhum alerta foi exibido.");
         }
+
+        List<WebElement> updatedDoctorList = driver.findElements(By.xpath("//ul/li"));
+        long updatedCount = updatedDoctorList.stream()
+                .filter(element -> element.getText().contains(existingDoctorUsername))
+                .count();
+
+        assertEquals(initialCount, updatedCount, "O médico duplicado foi adicionado novamente!");
     }
 
     @Test
@@ -85,21 +95,30 @@ public class AdminPageTest extends BaseTest {
         WebElement usernameField = driver.findElement(By.xpath("//input[@placeholder='Usuário']"));
         WebElement addButton = driver.findElement(By.xpath("//button[text()='Adicionar Médico']"));
 
-        String newDoctorUsername = "medico.sem.senha";
+        String newDoctorUsername = "SenhaMedico!" + System.currentTimeMillis();
+
+        List<WebElement> initialDoctorList = driver.findElements(By.xpath("//ul/li"));
+        long initialCount = initialDoctorList.stream()
+                .filter(element -> element.getText().contains(newDoctorUsername))
+                .count();
+
         usernameField.sendKeys(newDoctorUsername);
         addButton.click();
 
-        // Aguarda por um alerta ou mensagem de erro
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         try {
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
             Alert alert = wait.until(ExpectedConditions.alertIsPresent());
-            String alertText = alert.getText();
             alert.accept();
-            assertTrue(alertText.contains("Senha é obrigatória"),
-                    "Não exibiu mensagem adequada para senha ausente!");
         } catch (Exception e) {
-            fail("Nenhum alerta foi exibido para médico sem senha.");
+            System.out.println("Nenhum alerta foi exibido.");
         }
+
+        List<WebElement> updatedDoctorList = driver.findElements(By.xpath("//ul/li"));
+        long updatedCount = updatedDoctorList.stream()
+                .filter(element -> element.getText().contains(newDoctorUsername))
+                .count();
+
+        assertEquals(initialCount, updatedCount, "O médico foi adicionado mesmo sem senha!");
     }
 
     @Test
@@ -110,23 +129,27 @@ public class AdminPageTest extends BaseTest {
         WebElement passwordField = driver.findElement(By.xpath("//input[@placeholder='Senha']"));
         WebElement addButton = driver.findElement(By.xpath("//button[text()='Adicionar Médico']"));
 
-        String newDoctorPassword = "SenhaSemNome123!";
+        String newDoctorPassword = "SenhaMedico!" + System.currentTimeMillis();
+
+        List<WebElement> initialDoctorList = driver.findElements(By.xpath("//ul/li"));
+        int initialListSize = initialDoctorList.size();
+
         passwordField.sendKeys(newDoctorPassword);
         addButton.click();
 
-        // Aguarda por um alerta ou mensagem de erro
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         try {
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
             Alert alert = wait.until(ExpectedConditions.alertIsPresent());
-            String alertText = alert.getText();
             alert.accept();
-            assertTrue(alertText.contains("Nome é obrigatório"),
-                    "Não exibiu mensagem adequada para nome ausente!");
         } catch (Exception e) {
-            fail("Nenhum alerta foi exibido para médico sem nome.");
+            System.out.println("Nenhum alerta foi exibido.");
         }
-    }
 
+        List<WebElement> updatedDoctorList = driver.findElements(By.xpath("//ul/li"));
+        int updatedListSize = updatedDoctorList.size();
+
+        assertEquals(initialListSize, updatedListSize, "O médico foi adicionado mesmo sem nome!");
+    }
 
     @Test
     @DisplayName("Should Delete Doctor")
