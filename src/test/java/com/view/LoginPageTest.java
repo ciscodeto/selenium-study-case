@@ -206,10 +206,10 @@ public class LoginPageTest extends BaseTest {
         passwordField.sendKeys("SenhaErrada");
         loginButton.click();
 
-        wait.until(ExpectedConditions.not(ExpectedConditions.urlToBe("https://sitetc1kaykywaleskabreno.vercel.app/medico")));
+        wait.until(ExpectedConditions.urlToBe("https://sitetc1kaykywaleskabreno.vercel.app/login"));
 
         String currentUrl = driver.getCurrentUrl();
-        assertNotEquals("https://sitetc1kaykywaleskabreno.vercel.app/medico",
+        assertEquals("https://sitetc1kaykywaleskabreno.vercel.app/medico",
                 currentUrl, "A URL atual não é a esperada!");
     }
     @Test
