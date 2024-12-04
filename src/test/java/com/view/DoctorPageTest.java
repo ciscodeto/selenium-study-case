@@ -47,7 +47,7 @@ public class DoctorPageTest extends BaseTest {
                 "A URL não deveria ser de confirmação de atendimento salvo!");
     }
     @Test
-    @DisplayName("Tentar adicionar um CEP inexistente")
+    @DisplayName("Não conseguir adicionar um CEP inexistente")
     void testAddNonExistentCEP() {
         driver.get(doctorUrl);
 
