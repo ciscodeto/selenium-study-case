@@ -122,7 +122,7 @@ public class PacientPageTest extends BaseTest {
         assertTrue(isErrorDisplayed, "A mensagem de erro para o CEP inválido não foi exibida!");
     }
     @Test
-    @DisplayName("Tentar salvar atendimento sem nome do paciente preenchido")
+    @DisplayName("Não conseguir salvar atendimento sem nome do paciente preenchido")
     void testSaveAppointmentWithoutPatientName() {
         driver.get(pacienteUrl);
 
