@@ -46,4 +46,24 @@ public class DoctorPageTest extends BaseTest {
         assertNotEquals("https://sitetc1kaykywaleskabreno.vercel.app/confirmacao", currentUrl,
                 "A URL não deveria ser de confirmação de atendimento salvo!");
     }
+    @Test
+    @DisplayName("Tentar adicionar um CEP inexistente")
+    void testAddNonExistentCEP() {
+        driver.get(doctorUrl);
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        WebElement cepField = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='root']/div/div[3]/input")));
+        cepField.sendKeys("99999999");
+
+        WebElement confirmButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='root']/div/div[3]/button")));
+        confirmButton.click();
+
+        WebElement errorElement = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='root']/div/div[3]/div")));
+
+        boolean isErrorDisplayed = errorElement.isDisplayed();
+
+        assertTrue(isErrorDisplayed, "A mensagem de erro para CEP inexistente não foi exibida!");
+    }
+
 }
