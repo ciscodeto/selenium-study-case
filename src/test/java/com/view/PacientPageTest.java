@@ -100,4 +100,24 @@ public class PacientPageTest extends BaseTest {
         assertEquals("A data da consulta deve ser maior que a data atual.", errorText,
                 "A mensagem de erro não é a esperada!");
     }
+    @Test
+    @DisplayName("Tentar adicionar um CEP inválido para o paciente 'bob.brown654'")
+    void testAddInvalidCep() {
+        driver.get(pacienteUrl);
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        WebElement patientNameField = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='root']/div/div[1]/label/input")));
+        patientNameField.sendKeys("bob.brown654");
+
+        WebElement patientCepField = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='root']/div/div[2]/input")));
+        patientCepField.sendKeys("00000000");
+
+        WebElement confirmButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='root']/div/div[2]/button")));
+        confirmButton.click();
+
+        boolean isErrorDisplayed = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='root']/div/div[2]/div"))).isDisplayed();
+
+        assertTrue(isErrorDisplayed, "A mensagem de erro para o CEP inválido não foi exibida!");
+    }
 }
