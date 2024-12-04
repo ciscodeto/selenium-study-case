@@ -75,8 +75,81 @@ public class SeleniumTest {
                     lastDoctorText.contains(newDoctorUsername) && lastDoctorText.contains(newDoctorPassword),
                     "O último item da lista não corresponde ao médico recém-adicionado!"
             );
+        }
 
-            System.out.println("Teste bem-sucedido: Médico adicionado com sucesso.");
+        @Test
+        @DisplayName("Should Add New Patient")
+        void shouldAddPatient() {
+
+            WebElement usernameField = driver.findElements(By.xpath("//input[@placeholder='Usuário']")).get(1);
+            WebElement passwordField = driver.findElements(By.xpath("//input[@placeholder='Senha']")).get(1);
+            WebElement addButton = driver.findElement(By.xpath("//button[text()='Adicionar Paciente']"));
+
+            String newPatientUsername = "novo.paciente123";
+            String newPatientPassword = "SenhaPaciente123!";
+            usernameField.sendKeys(newPatientUsername);
+            passwordField.sendKeys(newPatientPassword);
+            addButton.click();
+
+            try {
+                WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+                Alert alert = wait.until(ExpectedConditions.alertIsPresent());
+                alert.accept(); // Aceitar o alerta
+            } catch (Exception e) {
+                System.out.println("Nenhum alerta foi exibido.");
+            }
+
+            // Localizar o último item da lista de pacientes com espera dinâmica
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            WebElement lastPatientElement = wait.until(
+                    ExpectedConditions.presenceOfElementLocated(By.xpath("(//ul)[2]/li[last()]"))
+            );
+
+            String lastPatientText = lastPatientElement.getText();
+            assertTrue(
+                    lastPatientText.contains(newPatientUsername) && lastPatientText.contains(newPatientPassword),
+                    "O último item da lista não corresponde ao paciente recém-adicionado!"
+            );
+        }
+
+        @Test
+        @DisplayName("Should Delete Doctor")
+        void shouldDeleteDoctor() {
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+            WebElement lastDoctorElement = wait.until(
+                    ExpectedConditions.presenceOfElementLocated(By.xpath("//ul/li[last()]"))
+            );
+
+            String lastDoctorText = lastDoctorElement.getText();
+
+            WebElement deleteButton = lastDoctorElement.findElement(By.xpath(".//button[contains(@class, 'buttonlixeira')]"));
+
+            deleteButton.click();
+
+            try {
+                Alert alert = wait.until(ExpectedConditions.alertIsPresent());
+                alert.accept();
+            } catch (Exception e) {
+                System.out.println("Nenhum alerta foi exibido.");
+            }
+
+            boolean doctorDeleted;
+            try {
+                List<WebElement> doctorElements = driver.findElements(By.xpath("//ul/li"));
+
+                if (doctorElements.isEmpty()) {
+                    doctorDeleted = true;
+                } else {
+                    doctorDeleted = doctorElements.stream()
+                            .noneMatch(element -> element.getText().contains(lastDoctorText));
+                }
+            } catch (Exception e) {
+                doctorDeleted = false;
+                System.out.println("Erro ao verificar a exclusão do médico.");
+            }
+
+            assertTrue(doctorDeleted, "O médico ainda está presente na lista após a exclusão!");
         }
     }
 
