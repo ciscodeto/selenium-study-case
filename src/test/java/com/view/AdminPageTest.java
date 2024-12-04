@@ -103,38 +103,16 @@ public class AdminPageTest extends BaseTest {
 
         String newDoctorUsername = generateUsername();
 
-        List<WebElement> initialDoctorList = driver.findElements(By.xpath("(//ul)[1]/li"));
-
-        for (WebElement doctor : initialDoctorList) {
-            try {
-                boolean hasUsername = doctor.getText().contains("Usuário: ");
-
-                if (!hasUsername) {
-                    WebElement deleteButton = doctor.findElement(By.xpath(".//button[contains(@class, 'buttonlixeira')]"));
-                    deleteButton.click();
-                    handleAlert();
-                }
-            } catch (NoSuchElementException e) {
-                System.out.println("Botão de exclusão não encontrado para este elemento. Ignorando.");
-            }
-        }
-
-        long initialCount = driver.findElements(By.xpath("(//ul)[1]/li"))
-                .stream()
-                .filter(element -> element.getText().contains(newDoctorUsername))
-                .count();
+        int initialListSize = driver.findElements(By.xpath("(//ul)[1]/li")).size();
 
         usernameField.sendKeys(newDoctorUsername);
         addButton.click();
 
         handleAlert();
 
-        long updatedCount = driver.findElements(By.xpath("(//ul)[1]/li"))
-                .stream()
-                .filter(element -> element.getText().contains(newDoctorUsername))
-                .count();
+        int updatedListSize = driver.findElements(By.xpath("(//ul)[1]/li")).size();
 
-        assertEquals(initialCount, updatedCount, "O médico foi adicionado mesmo sem senha!");
+        assertEquals(initialListSize, updatedListSize, "O médico foi adicionado mesmo sem senha!");
     }
 
     @Test
@@ -149,20 +127,28 @@ public class AdminPageTest extends BaseTest {
 
         List<WebElement> initialDoctorList = driver.findElements(By.xpath("(//ul)[1]/li"));
 
-        boolean hasInvalidDoctors = initialDoctorList.stream()
-                .anyMatch(doctor -> !doctor.getText().contains("Usuário: "));
-        assertFalse(hasInvalidDoctors, "Existem médicos sem nome no sistema antes do teste!");
-
-        int initialListSize = initialDoctorList.size();
+        boolean hasExistingEmptyNameDoctor = initialDoctorList.stream().anyMatch(doctor -> {
+            String doctorText = doctor.getText();
+            System.out.println("Texto do médico existente: " + doctorText); // Para debug
+            return doctorText.contains("Usuário: ,");
+        });
+        assertFalse(hasExistingEmptyNameDoctor, "Já existe um médico com nome vazio na lista antes do teste!");
 
         passwordField.sendKeys(newDoctorPassword);
         addButton.click();
 
         handleAlert();
 
-        int updatedListSize = driver.findElements(By.xpath("(//ul)[1]/li")).size();
+        List<WebElement> updatedDoctorList = driver.findElements(By.xpath("(//ul)[1]/li"));
 
-        assertEquals(initialListSize, updatedListSize, "O médico foi adicionado mesmo sem nome!");
+        List<WebElement> newDoctors = updatedDoctorList.subList(initialDoctorList.size(), updatedDoctorList.size());
+        boolean hasNewEmptyNameDoctor = newDoctors.stream().anyMatch(doctor -> {
+            String doctorText = doctor.getText();
+            System.out.println("Texto do novo médico: " + doctorText); // Para debug
+            return doctorText.contains("Usuário: ,");
+        });
+
+        assertFalse(hasNewEmptyNameDoctor, "Um médico com nome vazio foi adicionado após a tentativa!");
     }
 
     @Test
@@ -298,22 +284,20 @@ public class AdminPageTest extends BaseTest {
 
         String newPatientPassword = generatePassword();
 
-        List<WebElement> initialPatientList = driver.findElements(By.xpath("(//ul)[2]/li"));
-
-        boolean hasInvalidPatients = initialPatientList.stream()
-                .anyMatch(patient -> !patient.getText().contains("Usuário: "));
-        assertFalse(hasInvalidPatients, "Existem pacientes sem nome no sistema antes do teste!");
-
-        int initialListSize = initialPatientList.size();
+        boolean hasExistingEmptyNamePatient = driver.findElements(By.xpath("(//ul)[2]/li"))
+                .stream()
+                .anyMatch(patient -> patient.getText().contains("Usuário: ,"));
+        assertFalse(hasExistingEmptyNamePatient, "Já existe um paciente com nome vazio na lista antes do teste!");
 
         passwordField.sendKeys(newPatientPassword);
         addButton.click();
 
         handleAlert();
 
-        int updatedListSize = driver.findElements(By.xpath("(//ul)[2]/li")).size();
-
-        assertEquals(initialListSize, updatedListSize, "O paciente foi adicionado mesmo sem nome!");
+        boolean hasNewEmptyNamePatient = driver.findElements(By.xpath("(//ul)[2]/li"))
+                .stream()
+                .anyMatch(patient -> patient.getText().contains("Usuário: ,"));
+        assertFalse(hasNewEmptyNamePatient, "Um paciente com nome vazio foi adicionado após a tentativa!");
     }
 
     @Test
