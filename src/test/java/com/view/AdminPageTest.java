@@ -322,4 +322,21 @@ public class AdminPageTest extends BaseTest {
 
         assertTrue(patientDeleted, "O paciente ainda está presente na lista após a exclusão!");
     }
+    @Test
+    @DisplayName("Testar Botão de Voltar na Página Admin")
+    void testBackButtonOnAdminPage() {
+
+        driver.get(adminUrl);
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        WebElement backButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/div/button[3]")));
+        backButton.click();
+
+        wait.until(ExpectedConditions.urlToBe("https://sitetc1kaykywaleskabreno.vercel.app/login"));
+
+        String currentUrl = driver.getCurrentUrl();
+
+        assertEquals("https://sitetc1kaykywaleskabreno.vercel.app/login", currentUrl, "A URL atual não é a esperada!");
+    }
 }
