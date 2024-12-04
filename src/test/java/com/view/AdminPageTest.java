@@ -209,7 +209,6 @@ public class AdminPageTest extends BaseTest {
     @DisplayName("Should Not Add Repeated Patient")
     void shouldNotAddRepeatedPatient() {
         driver.get(adminUrl);
-
         WebElement usernameField = driver.findElements(By.xpath("//input[@placeholder='Usuário']")).get(1);
         WebElement passwordField = driver.findElements(By.xpath("//input[@placeholder='Senha']")).get(1);
         WebElement addButton = driver.findElement(By.xpath("//button[text()='Adicionar Paciente']"));
