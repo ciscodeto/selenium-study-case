@@ -325,18 +325,20 @@ public class AdminPageTest extends BaseTest {
     @Test
     @DisplayName("Testar Botão de Voltar na Página Admin")
     void testBackButtonOnAdminPage() {
-
         driver.get(adminUrl);
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-        WebElement backButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/div/button[3]")));
-        backButton.click();
+        try {
+            WebElement backButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/div/button[3]")));
+            backButton.click();
 
-        wait.until(ExpectedConditions.urlToBe("https://sitetc1kaykywaleskabreno.vercel.app/login"));
+            wait.until(ExpectedConditions.urlToBe("https://sitetc1kaykywaleskabreno.vercel.app/login"));
 
-        String currentUrl = driver.getCurrentUrl();
-
-        assertEquals("https://sitetc1kaykywaleskabreno.vercel.app/login", currentUrl, "A URL atual não é a esperada!");
+            String currentUrl = driver.getCurrentUrl();
+            assertEquals("https://sitetc1kaykywaleskabreno.vercel.app/login", currentUrl, "A URL atual não é a esperada!");
+        } catch (TimeoutException e) {
+            fail("O botão de voltar não redirecionou para a página de login dentro do tempo esperado. Verifique se a funcionalidade está implementada corretamente.");
+        }
     }
 }
