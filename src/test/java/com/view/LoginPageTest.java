@@ -118,14 +118,14 @@ public class LoginPageTest extends BaseTest {
         WebElement passwordField = driver.findElement(By.xpath("//input[@placeholder='Password']"));
         WebElement loginButton = driver.findElement(By.xpath("//button[text()='Login']"));
 
-        usernameField.sendKeys("novo.medico123");
-        passwordField.sendKeys("SenhaMedico123!");
+        usernameField.sendKeys("diana.green123");
+        passwordField.sendKeys("DianaPass123!");
         loginButton.click();
 
-        wait.until(ExpectedConditions.not(ExpectedConditions.urlToBe("https://sitetc1kaykywaleskabreno.vercel.app/paciente")));
+        wait.until(ExpectedConditions.urlToBe("https://sitetc1kaykywaleskabreno.vercel.app/medico"));
 
         String currentUrl = driver.getCurrentUrl();
-        assertNotEquals("https://sitetc1kaykywaleskabreno.vercel.app/paciente",
+        assertEquals("https://sitetc1kaykywaleskabreno.vercel.app/paciente",
                 currentUrl, "A URL atual não é a esperada!");
     }
     @Test
