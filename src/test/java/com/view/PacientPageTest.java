@@ -2,6 +2,7 @@ package com.view;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
@@ -12,7 +13,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -95,12 +95,25 @@ public class PacientPageTest extends BaseTest {
         WebElement saveButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='root']/div/button[1]")));
         saveButton.click();
 
-        WebElement errorMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div/div/p")));
+        try {
+            WebDriverWait alertWait = new WebDriverWait(driver, Duration.ofSeconds(5));
+            Alert alert = alertWait.until(ExpectedConditions.alertIsPresent());
+            String alertText = alert.getText();
+            alert.accept(); // Fecha o alerta
+            fail("Alerta inesperado foi exibido: " + alertText);
+        } catch (TimeoutException ignored) {
+        }
 
-        String errorText = errorMessage.getText();
-        assertEquals("A data da consulta deve ser maior que a data atual.", errorText,
-                "A mensagem de erro não é a esperada!");
+        try {
+            WebElement errorMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div/div/p")));
+            String errorText = errorMessage.getText();
+            assertEquals("A data da consulta deve ser maior que a data atual.", errorText,
+                    "A mensagem de erro não é a esperada!");
+        } catch (TimeoutException e) {
+            fail("A mensagem de erro esperada não foi exibida.");
+        }
     }
+
     @Test
     @DisplayName("Tentar adicionar um CEP inválido e mostrar a mensagem de erro")
     void testAddInvalidCep() {
