@@ -52,7 +52,7 @@ public class AdminPageTest extends BaseTest {
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         WebElement lastDoctorElement = wait.until(
-                ExpectedConditions.presenceOfElementLocated(By.xpath("//ul/li[last()]"))
+                ExpectedConditions.presenceOfElementLocated(By.xpath("(//ul)[1]/li[last()]"))
         );
 
         String lastDoctorText = lastDoctorElement.getText();
@@ -74,7 +74,7 @@ public class AdminPageTest extends BaseTest {
         String existingDoctorUsername = "diana.green123";
         String existingDoctorPassword = "DianaPass123!";
 
-        List<WebElement> initialDoctorList = driver.findElements(By.xpath("//ul/li"));
+        List<WebElement> initialDoctorList = driver.findElements(By.xpath("(//ul)[1]/li"));
         long initialCount = initialDoctorList.stream()
                 .filter(element -> element.getText().contains(existingDoctorUsername))
                 .count();
@@ -85,7 +85,7 @@ public class AdminPageTest extends BaseTest {
 
         handleAlert();
 
-        List<WebElement> updatedDoctorList = driver.findElements(By.xpath("//ul/li"));
+        List<WebElement> updatedDoctorList = driver.findElements(By.xpath("(//ul)[1]/li"));
         long updatedCount = updatedDoctorList.stream()
                 .filter(element -> element.getText().contains(existingDoctorUsername))
                 .count();
@@ -103,18 +103,17 @@ public class AdminPageTest extends BaseTest {
 
         String newDoctorUsername = generateUsername();
 
-        List<WebElement> initialDoctorList = driver.findElements(By.xpath("//ul/li"));
+        List<WebElement> initialDoctorList = driver.findElements(By.xpath("(//ul)[1]/li"));
 
         for (WebElement doctor : initialDoctorList) {
-            if (doctor.getText().contains("Senha: ")) {
-                continue;
+            if (!doctor.getText().contains("Senha: ")) {
+                WebElement deleteButton = doctor.findElement(By.xpath(".//button[contains(@class, 'buttonlixeira')]"));
+                deleteButton.click();
+                handleAlert();
             }
-            WebElement deleteButton = doctor.findElement(By.xpath(".//button[contains(@class, 'buttonlixeira')]"));
-            deleteButton.click();
-            handleAlert();
         }
 
-        long initialCount = driver.findElements(By.xpath("//ul/li"))
+        long initialCount = driver.findElements(By.xpath("(//ul)[1]/li"))
                 .stream()
                 .filter(element -> element.getText().contains(newDoctorUsername))
                 .count();
@@ -124,8 +123,8 @@ public class AdminPageTest extends BaseTest {
 
         handleAlert();
 
-        List<WebElement> updatedDoctorList = driver.findElements(By.xpath("//ul/li"));
-        long updatedCount = updatedDoctorList.stream()
+        long updatedCount = driver.findElements(By.xpath("(//ul)[1]/li"))
+                .stream()
                 .filter(element -> element.getText().contains(newDoctorUsername))
                 .count();
 
@@ -142,16 +141,25 @@ public class AdminPageTest extends BaseTest {
 
         String newDoctorPassword = generatePassword();
 
-        List<WebElement> initialDoctorList = driver.findElements(By.xpath("//ul/li"));
-        int initialListSize = initialDoctorList.size();
+        List<WebElement> initialDoctorList = driver.findElements(By.xpath("(//ul)[1]/li"));
+
+        for (WebElement doctor : initialDoctorList) {
+            if (doctor.getText().contains("Usuário: ")) {
+                continue;
+            }
+            WebElement deleteButton = doctor.findElement(By.xpath(".//button[contains(@class, 'buttonlixeira')]"));
+            deleteButton.click();
+            handleAlert();
+        }
+
+        int initialListSize = driver.findElements(By.xpath("(//ul)[1]/li")).size();
 
         passwordField.sendKeys(newDoctorPassword);
         addButton.click();
 
         handleAlert();
 
-        List<WebElement> updatedDoctorList = driver.findElements(By.xpath("//ul/li"));
-        int updatedListSize = updatedDoctorList.size();
+        int updatedListSize = driver.findElements(By.xpath("(//ul)[1]/li")).size();
 
         assertEquals(initialListSize, updatedListSize, "O médico foi adicionado mesmo sem nome!");
     }
@@ -163,7 +171,7 @@ public class AdminPageTest extends BaseTest {
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         WebElement lastDoctorElement = wait.until(
-                ExpectedConditions.presenceOfElementLocated(By.xpath("//ul/li[last()]"))
+                ExpectedConditions.presenceOfElementLocated(By.xpath("(//ul)[1]/li[last()]"))
         );
 
         String lastDoctorText = lastDoctorElement.getText();
@@ -171,16 +179,10 @@ public class AdminPageTest extends BaseTest {
 
         deleteButton.click();
 
-        try {
-            Alert alert = wait.until(ExpectedConditions.alertIsPresent());
-            alert.accept();
-        } catch (Exception e) {
-            System.out.println("Nenhum alerta foi exibido.");
-        }
+        handleAlert();
 
-        boolean doctorDeleted;
-        List<WebElement> doctorElements = driver.findElements(By.xpath("//ul/li"));
-        doctorDeleted = doctorElements.stream()
+        boolean doctorDeleted = driver.findElements(By.xpath("(//ul)[1]/li"))
+                .stream()
                 .noneMatch(element -> element.getText().contains(lastDoctorText));
 
         assertTrue(doctorDeleted, "O médico ainda está presente na lista após a exclusão!");
