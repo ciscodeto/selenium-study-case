@@ -120,4 +120,36 @@ public class PacientPageTest extends BaseTest {
 
         assertTrue(isErrorDisplayed, "A mensagem de erro para o CEP inválido não foi exibida!");
     }
+    @Test
+    @DisplayName("Tentar salvar atendimento sem nome do paciente preenchido")
+    void testSaveAppointmentWithoutPatientName() {
+        driver.get(pacienteUrl);
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        WebElement patientNumberField = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='root']/div/div[2]/input")));
+        patientNumberField.sendKeys("13690000");
+
+        WebElement confirmButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='root']/div/div[2]/button")));
+        confirmButton.click();
+
+        WebElement dateField = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='root']/div/div[3]/label/input")));
+        dateField.sendKeys("2025-01-01");
+
+        WebElement timeField = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='root']/div/div[4]/label/input")));
+        timeField.sendKeys("10:30");
+
+        WebElement specialtyField = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='root']/div/div[5]/label/input")));
+        specialtyField.sendKeys("Otorrinolaringologista");
+
+        WebElement saveButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='root']/div/button[1]")));
+        saveButton.click();
+
+        WebElement errorElement = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='root']/div/div[2]/div")));
+
+        boolean isErrorDisplayed = errorElement.isDisplayed();
+
+        assertTrue(isErrorDisplayed, "A mensagem de erro para ausência do nome do paciente não foi exibida!");
+    }
+
 }
