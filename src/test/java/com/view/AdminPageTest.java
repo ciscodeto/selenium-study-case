@@ -14,6 +14,24 @@ import static org.junit.jupiter.api.Assertions.*;
 public class AdminPageTest extends BaseTest {
     private final String adminUrl = "https://sitetc1kaykywaleskabreno.vercel.app/admin";
 
+    private static String generateUsername() {
+        return "Fulanim" + System.currentTimeMillis();
+    }
+
+    private static String generatePassword() {
+        return "sEnh4!" + System.currentTimeMillis();
+    }
+
+    private void handleAlert() {
+        try {
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            Alert alert = wait.until(ExpectedConditions.alertIsPresent());
+            alert.accept();
+        } catch (Exception e) {
+            System.out.println("Nenhum alerta foi exibido.");
+        }
+    }
+
     @Test
     @DisplayName("Should Add New Doctor")
     void shouldAddDoctor() {
@@ -23,20 +41,14 @@ public class AdminPageTest extends BaseTest {
         WebElement passwordField = driver.findElement(By.xpath("//input[@placeholder='Senha']"));
         WebElement addButton = driver.findElement(By.xpath("//button[text()='Adicionar Médico']"));
 
-        String newDoctorUsername = "novo.medico" + System.currentTimeMillis();
-        String newDoctorPassword = "SenhaMedico!" + System.currentTimeMillis();
+        String newDoctorUsername = generateUsername();
+        String newDoctorPassword = generatePassword();
 
         usernameField.sendKeys(newDoctorUsername);
         passwordField.sendKeys(newDoctorPassword);
         addButton.click();
 
-        try {
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-            Alert alert = wait.until(ExpectedConditions.alertIsPresent());
-            alert.accept();
-        } catch (Exception e) {
-            System.out.println("Nenhum alerta foi exibido.");
-        }
+        handleAlert();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         WebElement lastDoctorElement = wait.until(
@@ -71,13 +83,7 @@ public class AdminPageTest extends BaseTest {
         passwordField.sendKeys(existingDoctorPassword);
         addButton.click();
 
-        try {
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-            Alert alert = wait.until(ExpectedConditions.alertIsPresent());
-            alert.accept();
-        } catch (Exception e) {
-            System.out.println("Nenhum alerta foi exibido.");
-        }
+        handleAlert();
 
         List<WebElement> updatedDoctorList = driver.findElements(By.xpath("//ul/li"));
         long updatedCount = updatedDoctorList.stream()
@@ -95,23 +101,28 @@ public class AdminPageTest extends BaseTest {
         WebElement usernameField = driver.findElement(By.xpath("//input[@placeholder='Usuário']"));
         WebElement addButton = driver.findElement(By.xpath("//button[text()='Adicionar Médico']"));
 
-        String newDoctorUsername = "SenhaMedico!" + System.currentTimeMillis();
+        String newDoctorUsername = generateUsername();
 
         List<WebElement> initialDoctorList = driver.findElements(By.xpath("//ul/li"));
-        long initialCount = initialDoctorList.stream()
+
+        for (WebElement doctor : initialDoctorList) {
+            if (doctor.getText().contains("Senha: ")) {
+                continue;
+            }
+            WebElement deleteButton = doctor.findElement(By.xpath(".//button[contains(@class, 'buttonlixeira')]"));
+            deleteButton.click();
+            handleAlert();
+        }
+
+        long initialCount = driver.findElements(By.xpath("//ul/li"))
+                .stream()
                 .filter(element -> element.getText().contains(newDoctorUsername))
                 .count();
 
         usernameField.sendKeys(newDoctorUsername);
         addButton.click();
 
-        try {
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-            Alert alert = wait.until(ExpectedConditions.alertIsPresent());
-            alert.accept();
-        } catch (Exception e) {
-            System.out.println("Nenhum alerta foi exibido.");
-        }
+        handleAlert();
 
         List<WebElement> updatedDoctorList = driver.findElements(By.xpath("//ul/li"));
         long updatedCount = updatedDoctorList.stream()
@@ -129,7 +140,7 @@ public class AdminPageTest extends BaseTest {
         WebElement passwordField = driver.findElement(By.xpath("//input[@placeholder='Senha']"));
         WebElement addButton = driver.findElement(By.xpath("//button[text()='Adicionar Médico']"));
 
-        String newDoctorPassword = "SenhaMedico!" + System.currentTimeMillis();
+        String newDoctorPassword = generatePassword();
 
         List<WebElement> initialDoctorList = driver.findElements(By.xpath("//ul/li"));
         int initialListSize = initialDoctorList.size();
@@ -137,13 +148,7 @@ public class AdminPageTest extends BaseTest {
         passwordField.sendKeys(newDoctorPassword);
         addButton.click();
 
-        try {
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-            Alert alert = wait.until(ExpectedConditions.alertIsPresent());
-            alert.accept();
-        } catch (Exception e) {
-            System.out.println("Nenhum alerta foi exibido.");
-        }
+        handleAlert();
 
         List<WebElement> updatedDoctorList = driver.findElements(By.xpath("//ul/li"));
         int updatedListSize = updatedDoctorList.size();
