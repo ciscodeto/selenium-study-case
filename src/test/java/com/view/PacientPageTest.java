@@ -151,5 +151,22 @@ public class PacientPageTest extends BaseTest {
 
         assertTrue(isErrorDisplayed, "A mensagem de erro para ausência do nome do paciente não foi exibida!");
     }
+    @Test
+    @DisplayName("Testar Botão de Voltar na Página Paciente")
+    void testBackButtonOnPacientPage() {
+
+        driver.get(pacienteUrl);
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        WebElement backButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/div/button[2]")));
+        backButton.click();
+
+        wait.until(ExpectedConditions.urlToBe("https://sitetc1kaykywaleskabreno.vercel.app/login"));
+
+        String currentUrl = driver.getCurrentUrl();
+
+        assertEquals("https://sitetc1kaykywaleskabreno.vercel.app/login", currentUrl, "A URL atual não é a esperada!");
+    }
 
 }
