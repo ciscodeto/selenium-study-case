@@ -102,7 +102,7 @@ public class PacientPageTest extends BaseTest {
                 "A mensagem de erro não é a esperada!");
     }
     @Test
-    @DisplayName("Tentar adicionar um CEP inválido para o paciente 'bob.brown654'")
+    @DisplayName("Tentar adicionar um CEP inválido e mostrar a mensagem de erro")
     void testAddInvalidCep() {
         driver.get(pacienteUrl);
 
