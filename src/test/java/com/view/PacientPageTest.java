@@ -3,6 +3,7 @@ package com.view;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -159,14 +160,17 @@ public class PacientPageTest extends BaseTest {
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-        WebElement backButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/div/button[2]")));
-        backButton.click();
+        try {
+            WebElement backButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/div/button[2]")));
+            backButton.click();
 
-        wait.until(ExpectedConditions.urlToBe("https://sitetc1kaykywaleskabreno.vercel.app/login"));
+            wait.until(ExpectedConditions.urlToBe("https://sitetc1kaykywaleskabreno.vercel.app/login"));
 
-        String currentUrl = driver.getCurrentUrl();
-
-        assertEquals("https://sitetc1kaykywaleskabreno.vercel.app/login", currentUrl, "A URL atual não é a esperada!");
+            String currentUrl = driver.getCurrentUrl();
+            assertEquals("https://sitetc1kaykywaleskabreno.vercel.app/login", currentUrl, "A URL atual não é a esperada!");
+        } catch (TimeoutException e) {
+            fail("O botão de voltar não redirecionou para a página de login dentro do tempo esperado. Verifique se a funcionalidade está implementada corretamente.");
+        }
     }
 
 }

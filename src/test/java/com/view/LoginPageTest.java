@@ -54,7 +54,7 @@ public class LoginPageTest extends BaseTest {
         wait.until(ExpectedConditions.not(ExpectedConditions.urlToBe("https://sitetc1kaykywaleskabreno.vercel.app/paciente")));
 
         String currentUrl = driver.getCurrentUrl();
-        assertNotEquals("https://sitetc1kaykywaleskabreno.vercel.app/medico",
+        assertEquals("https://sitetc1kaykywaleskabreno.vercel.app/medico",
                 currentUrl, "A URL atual não é a esperada!");
     }
 
@@ -76,10 +76,10 @@ public class LoginPageTest extends BaseTest {
             passwordField.sendKeys("123456");
             loginButton.click();
 
-            wait.until(ExpectedConditions.not(ExpectedConditions.urlToBe("https://sitetc1kaykywaleskabreno.vercel.app/medico")));
+            wait.until(ExpectedConditions.urlToBe("https://sitetc1kaykywaleskabreno.vercel.app/medico"));
 
             String currentUrl = driver.getCurrentUrl();
-            assertNotEquals("https://sitetc1kaykywaleskabreno.vercel.app/medico",
+            assertEquals("https://sitetc1kaykywaleskabreno.vercel.app/medico",
                     currentUrl, "A URL atual não é a esperada!");
         } catch (Exception e) {
             Assertions.fail("Erro no Teste 3: " + e.getMessage());
