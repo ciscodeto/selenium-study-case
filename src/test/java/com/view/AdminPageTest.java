@@ -330,15 +330,62 @@ public class AdminPageTest extends BaseTest {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
         try {
-            WebElement backButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/div/button[3]")));
+            WebElement backButton = wait.until(ExpectedConditions.elementToBeClickable(
+                    By.xpath("//*[@id=\"root\"]/div/button[3]")));
             backButton.click();
 
             wait.until(ExpectedConditions.urlToBe("https://sitetc1kaykywaleskabreno.vercel.app/login"));
 
             String currentUrl = driver.getCurrentUrl();
-            assertEquals("https://sitetc1kaykywaleskabreno.vercel.app/login", currentUrl, "A URL atual não é a esperada!");
+            assertEquals("https://sitetc1kaykywaleskabreno.vercel.app/login", currentUrl,
+                    "A URL atual não é a esperada!");
         } catch (TimeoutException e) {
-            fail("O botão de voltar não redirecionou para a página de login dentro do tempo esperado. Verifique se a funcionalidade está implementada corretamente.");
+            fail("O botão de voltar não redirecionou para a página de login dentro do tempo esperado." +
+                    "Verifique se a funcionalidade está implementada corretamente.");
         }
+    }
+
+    @Test
+    @DisplayName("Should Not Allow Repeated User Between Patient And Doctor")
+    void shouldNotAllowRepeatedUserBetweenPatientAndDoctor() {
+        driver.get(adminUrl);
+
+        WebElement doctorUsernameField = driver.findElement(By.xpath("//input[@placeholder='Usuário']"));
+        WebElement doctorPasswordField = driver.findElement(By.xpath("//input[@placeholder='Senha']"));
+        WebElement addDoctorButton = driver.findElement(By.xpath("//button[text()='Adicionar Médico']"));
+
+        String repeatedUsername = generateUsername();
+        String repeatedPassword = generatePassword();
+
+        doctorUsernameField.sendKeys(repeatedUsername);
+        doctorPasswordField.sendKeys(repeatedPassword);
+        addDoctorButton.click();
+        handleAlert();
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("(//ul)[1]/li")));
+        boolean doctorAdded = driver.findElements(By.xpath("(//ul)[1]/li"))
+                .stream()
+                .anyMatch(doctor -> doctor.getText().contains("Usuário: " + repeatedUsername));
+        assertTrue(doctorAdded, "O médico não foi adicionado corretamente.");
+
+        WebElement patientUsernameField = wait.until(ExpectedConditions.presenceOfElementLocated(
+                By.xpath("(//input[@placeholder='Usuário'])[2]")
+        ));
+        WebElement patientPasswordField = wait.until(ExpectedConditions.presenceOfElementLocated(
+                By.xpath("(//input[@placeholder='Senha'])[2]")
+        ));
+        WebElement addPatientButton = driver.findElement(By.xpath("//button[text()='Adicionar Paciente']"));
+
+        patientUsernameField.sendKeys(repeatedUsername);
+        patientPasswordField.sendKeys(repeatedPassword);
+        addPatientButton.click();
+        handleAlert();
+
+        wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("(//ul)[2]/li")));
+        boolean patientAdded = driver.findElements(By.xpath("(//ul)[2]/li"))
+                .stream()
+                .anyMatch(patient -> patient.getText().contains("Usuário: " + repeatedUsername));
+        assertFalse(patientAdded, "O paciente foi adicionado com um nome de usuário já existente na lista de médicos.");
     }
 }
