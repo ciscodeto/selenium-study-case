@@ -23,8 +23,9 @@ public class AdminPageTest extends BaseTest {
         WebElement passwordField = driver.findElement(By.xpath("//input[@placeholder='Senha']"));
         WebElement addButton = driver.findElement(By.xpath("//button[text()='Adicionar Médico']"));
 
-        String newDoctorUsername = "novo.medico123";
-        String newDoctorPassword = "SenhaMedico123!";
+        String newDoctorUsername = "novo.medico" + System.currentTimeMillis();
+        String newDoctorPassword = "SenhaMedico!" + System.currentTimeMillis();
+
         usernameField.sendKeys(newDoctorUsername);
         passwordField.sendKeys(newDoctorPassword);
         addButton.click();
@@ -48,6 +49,84 @@ public class AdminPageTest extends BaseTest {
                 "O último item da lista não corresponde ao médico recém-adicionado!"
         );
     }
+
+    @Test
+    @DisplayName("Should Not Add Repeated Doctor")
+    void shouldNotAddRepeatedDoctor() {
+        driver.get(adminUrl);
+
+        WebElement usernameField = driver.findElement(By.xpath("//input[@placeholder='Usuário']"));
+        WebElement passwordField = driver.findElement(By.xpath("//input[@placeholder='Senha']"));
+        WebElement addButton = driver.findElement(By.xpath("//button[text()='Adicionar Médico']"));
+
+        String existingDoctorUsername = "diana.green123";
+        String existingDoctorPassword = "DianaPass123!";
+        usernameField.sendKeys(existingDoctorUsername);
+        passwordField.sendKeys(existingDoctorPassword);
+        addButton.click();
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        try {
+            Alert alert = wait.until(ExpectedConditions.alertIsPresent());
+            String alertText = alert.getText();
+            alert.accept();
+            assertTrue(alertText.contains("Já existe um médico com esse nome"),
+                    "Não exibiu mensagem adequada para médico duplicado!");
+        } catch (Exception e) {
+            fail("Nenhum alerta foi exibido para médico duplicado.");
+        }
+    }
+
+    @Test
+    @DisplayName("Should Not Add Doctor Without Password")
+    void shouldNotAddDoctorWithoutPassword() {
+        driver.get(adminUrl);
+
+        WebElement usernameField = driver.findElement(By.xpath("//input[@placeholder='Usuário']"));
+        WebElement addButton = driver.findElement(By.xpath("//button[text()='Adicionar Médico']"));
+
+        String newDoctorUsername = "medico.sem.senha";
+        usernameField.sendKeys(newDoctorUsername);
+        addButton.click();
+
+        // Aguarda por um alerta ou mensagem de erro
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        try {
+            Alert alert = wait.until(ExpectedConditions.alertIsPresent());
+            String alertText = alert.getText();
+            alert.accept();
+            assertTrue(alertText.contains("Senha é obrigatória"),
+                    "Não exibiu mensagem adequada para senha ausente!");
+        } catch (Exception e) {
+            fail("Nenhum alerta foi exibido para médico sem senha.");
+        }
+    }
+
+    @Test
+    @DisplayName("Should Not Add Doctor Without Name")
+    void shouldNotAddDoctorWithoutName() {
+        driver.get(adminUrl);
+
+        WebElement passwordField = driver.findElement(By.xpath("//input[@placeholder='Senha']"));
+        WebElement addButton = driver.findElement(By.xpath("//button[text()='Adicionar Médico']"));
+
+        String newDoctorPassword = "SenhaSemNome123!";
+        passwordField.sendKeys(newDoctorPassword);
+        addButton.click();
+
+        // Aguarda por um alerta ou mensagem de erro
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        try {
+            Alert alert = wait.until(ExpectedConditions.alertIsPresent());
+            String alertText = alert.getText();
+            alert.accept();
+            assertTrue(alertText.contains("Nome é obrigatório"),
+                    "Não exibiu mensagem adequada para nome ausente!");
+        } catch (Exception e) {
+            fail("Nenhum alerta foi exibido para médico sem nome.");
+        }
+    }
+
 
     @Test
     @DisplayName("Should Delete Doctor")
